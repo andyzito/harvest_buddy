@@ -1,7 +1,5 @@
-#!/usr/bin/env ruby
-
 class SyncCommand
-  def run
+  def self.run
     response = Faraday.get(
       "https://api.harvestapp.com/api/v2/time_entries",
       {
@@ -32,7 +30,7 @@ class SyncCommand
 
     budget_totals.each do |budget_slug, hours|
       budget = Budget.find_by(slug: budget_slug)
-      budget.update!(time_spent: budget.time_spent + hours)
+      budget.update!(time_spent: hours)
       puts "Synced #{budget_slug}=#{hours}/#{budget.time_budgeted}"
     end
   end

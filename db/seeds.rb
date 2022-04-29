@@ -5,11 +5,3 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-
-meetings = ENV.fetch('INITIAL_BUDGET_FOR_MEETINGS', 8)
-flex = ENV.fetch('INITIAL_BUDGET_FOR_FLEX', 5)
-
-Budget.make(:unknown, 0).save!
-Budget.make(:unbudgeted, 0).save!
-Budget.make(:meetings, meetings).save!
-Budget.make(:flex, flex).save!
