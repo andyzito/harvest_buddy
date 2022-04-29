@@ -1,4 +1,4 @@
-- round to nearest .25
+x round to nearest .25
 - don't show .0
 - ability to sort summary by any column
 - better summary formatting (more space? larger text?)

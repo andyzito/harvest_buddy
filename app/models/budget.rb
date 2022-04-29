@@ -7,8 +7,23 @@ class Budget < ActiveRecord::Base
     return instance
   end
 
+  def hours_format(number)
+    v = number.to_f.round_to_quarter
+    v % 1 == 0 ? v.to_int : v
+  end
+
   def time_left
-    (time_budgeted - (time_spent || 0)).to_f.round_to_quarter
+    hours_format(time_budgeted - (time_spent || 0))
+  end
+
+  def time_spent
+    db_value = super
+    hours_format(db_value)
+  end
+
+  def time_budgeted
+    db_value = super
+    hours_format(db_value)
   end
 
   def time_spent=(value)
@@ -19,9 +34,6 @@ class Budget < ActiveRecord::Base
     super(value.to_f.round_to_quarter)
   end
 
-  # def self.all_active
-  #   Budget.where(week: nil)
-  # end
   scope :active, -> { where(week: nil) }
 
   def self.total_budgeted(week = nil)
