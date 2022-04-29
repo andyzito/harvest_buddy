@@ -4,13 +4,14 @@ class BudgetCommand
   def self.create_or_update(budget_slug, time_budgeted)
     if Budget.exists?(slug: budget_slug)
       budget = Budget.all_active.find_by(slug: budget_slug)
+      old_time_budgeted = budget.time_budgeted
       if time_budgeted.match(/(\+|\-)[\d\.]+/)
-        new_time_budgeted = budget.time_budgeted + time_budgeted.to_f
+        budget.time_budgeted = budget.time_budgeted + time_budgeted.to_f
       else
-        new_time_budgeted = time_budgeted.to_f
+        budget.time_budgeted = time_budgeted.to_f
       end
-      puts "> #{budget.slug}: #{budget.time_budgeted} → #{new_time_budgeted}"
-      budget.update!(time_budgeted: new_time_budgeted)
+      puts "> #{budget.slug}: #{old_time_budgeted} → #{budget.time_budgeted}"
+      budget.save!
     else
       budget = Budget.make(budget_slug, time_budgeted)
       budget.save!

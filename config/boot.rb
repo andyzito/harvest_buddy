@@ -12,6 +12,12 @@ class String
   end
 end
 
+class Float
+  def round_to_quarter
+    (self * 4).round / 4.0
+  end
+end
+
 class Env
   def self.fetch_bool(key, default)
     if ENV.fetch(key, nil).in?(['true', 1])

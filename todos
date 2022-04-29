@@ -2,6 +2,6 @@
 - don't show .0
 - ability to sort summary by any column
 - better summary formatting (more space? larger text?)
-- better reset command
-- better cli invocation ([namespace] budget ...)
+x better reset command
+x better cli invocation ([namespace] budget ...)
 - command to clear tags from harvest notes (for submission at end of week -- maybe not needed, ask if PMs/HR put notes in client invoices?)

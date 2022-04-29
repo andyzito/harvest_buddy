@@ -8,7 +8,15 @@ class Budget < ActiveRecord::Base
   end
 
   def time_left
-    time_budgeted - (time_spent || 0)
+    (time_budgeted - (time_spent || 0)).to_f.round_to_quarter
+  end
+
+  def time_spent=(value)
+    super(value.to_f.round_to_quarter)
+  end
+
+  def time_budgeted=(value)
+    super(value.to_f.round_to_quarter)
   end
 
   def self.all_active
