@@ -20,11 +20,11 @@ class ResetCommand < BaseCommand
         end
       end
 
-      Budget.all_active.update(week: week)
+      Budget.active.update(week: week)
     else
       puts "Reset without saving active budgets? [y/N]"
       if yes?(STDIN.gets.chomp)
-        Budget.all_active.delete_all
+        Budget.active.delete_all
       else
         return
       end
@@ -34,7 +34,7 @@ class ResetCommand < BaseCommand
   end
 
   def self.is_diverged?
-    current_active = Budget.all_active.map(&:to_comparable)
+    current_active = Budget.active.map(&:to_comparable)
     current_active != default_budgets.map(&:to_comparable)
   end
 

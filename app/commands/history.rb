@@ -33,7 +33,7 @@ class HistoryCommand < BaseCommand
       return unless yes?(STDIN.gets.chomp)
     end
 
-    Budget.all_active.delete_all
+    Budget.active.delete_all
     restored = Budget.where(week: week).map(&:dup)
     restored.map { |r| r.week = nil }
     restored.map(&:save!)

@@ -1,5 +1,5 @@
 class SummaryCommand
-  def self.run(budgets=Budget.all_active)
+  def self.run(budgets=Budget.active)
     table = Terminal::Table.new do |t|
       t.add_row ['', 'Spent', 'Budgeted', 'Left']
       t.add_separator

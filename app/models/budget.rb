@@ -19,9 +19,10 @@ class Budget < ActiveRecord::Base
     super(value.to_f.round_to_quarter)
   end
 
-  def self.all_active
-    Budget.where(week: nil)
-  end
+  # def self.all_active
+  #   Budget.where(week: nil)
+  # end
+  scope :active, -> { where(week: nil) }
 
   def self.total_budgeted(week = nil)
     Budget.where(week: week).sum(&:time_budgeted).round
