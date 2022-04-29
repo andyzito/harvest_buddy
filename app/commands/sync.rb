@@ -18,7 +18,10 @@ class SyncCommand
 
     week = Date.today.beginning_of_week
 
-    budget_totals = {}
+    budget_totals = {
+      unbudgeted: 0,
+      unknown: 0,
+    }
 
     time_entries.each do |time|
       budget_slug = time['notes'][/\[hbb\:([a-z0-9\-\_]+)\]/,1]&.to_sym

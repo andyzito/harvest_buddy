@@ -19,41 +19,6 @@ class SubCommandBase < Thor
   end
 end
 
-# module Hbb
-#   # class Summary < SubCommandBase
-#   #   desc "summary", "summary!"
-#   #   def summary
-#   #     puts "SUMMARY"
-#   #     # SummaryCommand.run
-#   #   end
-#   # end
-
-#   class History < SubCommandBase
-#     desc "summary", "summary!"
-#     def summary
-#       puts 'history summary'
-#     end
-
-#     desc "restore", "restore!"
-#     def restore
-#       puts 'history restore'
-#     end
-#   end
-
-#   class Cli < Thor
-#     # namespace :hbb
-#     # desc "history", "whatever"
-#     # subcommand "history", History
-
-#     def self.exit_on_failure?
-#       true
-#     end
-#   end
-# end
-
-# Hbb::Cli.start
-
-
 class History < SubCommandBase
   desc "summary", "summary!"
   map 's' => :summary
@@ -97,6 +62,14 @@ class Hbb < Thor
   map 'b' => :budget
   def budget(slug, hours = 0)
     BudgetCommand.create_or_update(slug, hours)
+  end
+
+  desc "remove", ""
+  map 'rm' => :budget
+  map 'del' => :budget
+  map 'delete' => :budget
+  def remove(slug, hours = 0)
+    BudgetCommand.remove(slug)
   end
 
   desc "move", ""
