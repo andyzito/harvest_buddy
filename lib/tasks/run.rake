@@ -1,6 +1,7 @@
 require_relative '../../app/commands/budget.rb'
 require_relative '../../app/commands/summary.rb'
 require_relative '../../app/commands/sync.rb'
+require_relative '../../app/commands/reset.rb'
 require 'dotenv'
 
 desc "runme"
@@ -27,6 +28,8 @@ task hbb: :environment do
       to_slug: to_slug,)
   when 'sync'
     SyncCommand.run
+  when 'reset', 'r'
+    ResetCommand.run
   else
     puts "unknown command"
     exit
