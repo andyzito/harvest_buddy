@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+begin
+  load File.expand_path('../spring', __FILE__)
+rescue LoadError => e
+  raise unless e.message.include?('spring')
+end
+APP_PATH = File.expand_path('../config/application', __dir__)
+require_relative '../config/boot'
+require 'rails/commands'
+
+require_relative '../app/commands/budget.rb'
+require_relative '../app/commands/summary.rb'
+require_relative '../app/commands/sync.rb'
+# require_relative '../app/commands/budget.rb'
+require 'dotenv'
+
+Dotenv.load('.env', '.env.local')
+
+command = ARGV[0]
+
+case command
+when 'budget'
+  BudgetCommand.run(ARGV[1], ARGV[2])
+end
