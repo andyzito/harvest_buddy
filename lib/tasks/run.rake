@@ -2,6 +2,7 @@ require_relative '../../app/commands/budget.rb'
 require_relative '../../app/commands/summary.rb'
 require_relative '../../app/commands/sync.rb'
 require_relative '../../app/commands/reset.rb'
+require_relative '../../app/commands/history.rb'
 require 'dotenv'
 
 desc "runme"
@@ -29,7 +30,18 @@ task hbb: :environment do
   when 'sync'
     SyncCommand.run
   when 'reset', 'r'
-    ResetCommand.run
+    ResetCommand.run(
+      save: Env.fetch_bool('SAVE', true),
+    )
+  when 'history', 'h'
+    subcommand = ARGV[2]
+    case subcommand
+    when 'restore', 'r'
+      HistoryCommand.restore(ARGV[3])
+    when 'summary', 's', nil
+      HistoryCommand.summary
+      exit
+    end
   else
     puts "unknown command"
     exit

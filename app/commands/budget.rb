@@ -3,7 +3,7 @@ require_relative '../models/budget'
 class BudgetCommand
   def self.create_or_update(budget_slug, time_budgeted)
     if Budget.exists?(slug: budget_slug)
-      budget = Budget.find_by(slug: budget_slug)
+      budget = Budget.all_active.find_by(slug: budget_slug)
       if time_budgeted.match(/(\+|\-)[\d\.]+/)
         new_time_budgeted = budget.time_budgeted + time_budgeted.to_f
       else
@@ -19,8 +19,8 @@ class BudgetCommand
   end
 
   def self.move(from_slug:, hours:, to_slug:)
-    from_budget = Budget.find_by(slug: from_slug)
-    to_budget = Budget.find_by(slug: to_slug)
+    from_budget = Budget.all_active.find_by(slug: from_slug)
+    to_budget = Budget.all_active.find_by(slug: to_slug)
 
     raise "#{from_budget} doesn't exist" unless from_budget
     raise "#{to_budget} doesn't exist" unless to_budget

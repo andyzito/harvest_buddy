@@ -14,10 +14,12 @@ end
 
 class Env
   def self.fetch_bool(key, default)
-    if ENV.fetch(key, default).in?(['true', 1])
+    if ENV.fetch(key, nil).in?(['true', 1])
       true
-    else
+    elsif ENV.fetch(key, nil).in?(['false', 0])
       false
+    else
+      default
     end
   end
 end
