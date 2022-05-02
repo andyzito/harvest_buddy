@@ -1,14 +1,13 @@
 class Budget < ActiveRecord::Base
 
-  enum status: [:active, :archived]
+  belongs_to :week
 
-  def self.make(slug, time_budgeted, time_spent = 0, status: :active)
+  def self.make(slug, time_budgeted, time_spent = 0, week: nil)
     instance = self.new
     instance.slug = slug
     instance.time_budgeted = time_budgeted
     instance.time_spent = time_spent
-    instance.status = status
-    instance.week = self.active_week
+    instance.week = week
     return instance
   end
 
@@ -39,26 +38,6 @@ class Budget < ActiveRecord::Base
     super(value.to_f.round_to_quarter)
   end
 
-  def self.total_budgeted(week = self.active_week, status: :active)
-    Budget.where(week: week, status: status).sum(&:time_budgeted).round
-  end
-
-  def self.total_spent(week = self.active_week, status: :active)
-    Budget.where(week: week, status: status).sum(&:time_spent).round
-  end
-
-  def self.total_left(week = self.active_week, status: :active)
-    Budget.where(week: week, status: status).sum(&:time_left).round
-  end
-
-  def self.weeks
-    Budget.order(week: :desc).distinct.pluck(:week).compact
-  end
-
-  def self.active_week
-    Budget.active.sample&.week || Date.today.beginning_of_week
-  end
-
   def to_comparable
     {
       slug: slug,
@@ -66,5 +45,15 @@ class Budget < ActiveRecord::Base
       time_budgeted: time_budgeted.to_f,
       time_left: time_left.to_f
     }
+  end
+
+  def self.defaults
+    budgets = []
+    budgets << Budget.make(:unknown, 0.0) if Env.fetch_bool('ENABLE_UNKNOWN', true)
+    budgets << Budget.make(:unbudgeted, 0.0) if Env.fetch_bool('ENABLE_UNBUDGETED', true)
+    Rails.application.config_for(:budgets)[:initial_budgets].each do |slug, hours|
+      budgets << Budget.make(slug, hours)
+    end
+    budgets
   end
 end

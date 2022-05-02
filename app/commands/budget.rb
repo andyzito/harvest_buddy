@@ -2,8 +2,8 @@ require_relative '../models/budget'
 
 class BudgetCommand
   def self.create_or_update(budget_slug, time_budgeted)
-    if Budget.active.exists?(slug: budget_slug)
-      budget = Budget.active.find_by(slug: budget_slug)
+    if Week.active.budget_exists?(budget_slug)
+      budget = Week.active.find_budget(budget_slug)
       old_time_budgeted = budget.time_budgeted
       if time_budgeted.match(/(\+|\-)[\d\.]+/)
         budget.time_budgeted = budget.time_budgeted + time_budgeted.to_f
@@ -13,25 +13,25 @@ class BudgetCommand
       puts "> #{budget.slug}: #{old_time_budgeted} → #{budget.time_budgeted}"
       budget.save!
     else
-      budget = Budget.make(budget_slug, time_budgeted)
+      budget = Budget.make(budget_slug, time_budgeted, week: Week.active)
       budget.save!
       puts "> #{budget.slug}: #{budget.time_budgeted}"
     end
   end
 
   def self.remove(budget_slug)
-    if Budget.active.exists?(slug: budget_slug)
-      budget = Budget.active.find_by(slug: budget_slug)
+    if Week.active.budget_exists?(budget_slug)
+      budget = Week.active.find_budget(budget_slug)
       puts "> Deleting #{budget.slug} (#{budget.time_spent}/#{budget.time_budgeted})"
-      Budget.delete_by(slug: budget_slug, status: :active)
+      Week.active.delete_budget(budget_slug)
     else
       puts "Budget #{budget_slug} does not exist in the active week."
     end
   end
 
   def self.move(from_slug:, hours:, to_slug:)
-    from_budget = Budget.active.find_by(slug: from_slug)
-    to_budget = Budget.active.find_by(slug: to_slug)
+    from_budget = Week.active.find_budget(slug: from_slug)
+    to_budget = Week.active.find_budget(slug: to_slug)
 
     raise "#{from_slug} doesn't exist" unless from_budget
 
@@ -53,7 +53,7 @@ class BudgetCommand
 
     unless to_budget
       if Env.fetch_bool('ENABLE_CREATE_ON_MV', true)
-        to_budget = Budget.make(to_slug, 0)
+        to_budget = Budget.make(to_slug, 0, week: Week.active)
       else
         raise "#{to_slug} doesn't exist"
       end

@@ -1,6 +1,6 @@
 class SyncCommand
   def self.run
-    week = Budget.active_week
+    week = Week.active
 
     response = Faraday.get(
       "https://api.harvestapp.com/api/v2/time_entries",
@@ -27,14 +27,14 @@ class SyncCommand
       budget_slug = time['notes'][/\[hbb\:([a-z0-9\-\_]+)\]/,1]&.to_sym
 
       budget_slug = :unbudgeted unless budget_slug
-      budget_slug = :unknown unless Budget.active.exists?(slug: budget_slug)
+      budget_slug = :unknown unless Week.active.budget_exists?(budget_slug)
 
       budget_totals[budget_slug] ||= 0
       budget_totals[budget_slug] += time['hours'].to_f
     end
 
     budget_totals.each do |budget_slug, hours|
-      budget = Budget.active.find_by(slug: budget_slug)
+      budget = Week.active.find_budget(budget_slug)
       budget.update!(time_spent: hours)
       puts "Synced #{budget_slug}=#{budget.time_spent}/#{budget.time_budgeted}"
     end

@@ -2,6 +2,7 @@
 - better summary formatting (more space? larger text?)
 - command to clear tags from harvest notes (for submission at end of week -- maybe not needed, ask if PMs/HR put notes in client invoices?)
 - weekly maximum hours across all budgets
+- default budget to pull hours from when creating new budgets (magic flex category?)
 - budget across multiple weeks?
 - autocreate found slugs if they don't exist
-- save vs reset, tt vs restore
+x save vs reset, tt vs restore

@@ -51,11 +51,9 @@ class Hbb < Thor
 
   desc "reset", "Reset to default budgets"
   map 'r' => :reset
-  method_option :hard, type: :boolean, default: false
+  # method_option :hard, type: :boolean, default: false
   def reset
-    ResetCommand.run(
-      save: !options.hard?,
-    )
+    ResetCommand.run
   end
 
   desc "budget", "Create/update a budget"
