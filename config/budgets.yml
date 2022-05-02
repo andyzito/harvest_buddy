@@ -2,7 +2,7 @@ default: &default
   initial_budgets:
     meetings: 6
     break: 4.5
-    flex: 24.5
+    maint: 5
 
 test:
   <<: *default

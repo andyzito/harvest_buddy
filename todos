@@ -5,4 +5,4 @@
 - default budget to pull hours from when creating new budgets (magic flex category?)
 - budget across multiple weeks?
 - autocreate found slugs if they don't exist
-x save vs reset, tt vs restore
+- budget tags

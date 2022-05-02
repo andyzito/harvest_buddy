@@ -19,6 +19,10 @@ class Float
 end
 
 class Env
+  def self.fetch(key, default)
+    ENV.fetch(key, default)
+  end
+
   def self.fetch_bool(key, default)
     if ENV.fetch(key, nil).in?(['true', 1])
       true

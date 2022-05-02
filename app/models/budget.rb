@@ -51,9 +51,13 @@ class Budget < ActiveRecord::Base
     budgets = []
     budgets << Budget.make(:unknown, 0.0) if Env.fetch_bool('ENABLE_UNKNOWN', true)
     budgets << Budget.make(:unbudgeted, 0.0) if Env.fetch_bool('ENABLE_UNBUDGETED', true)
+    defaults_total = 0
     Rails.application.config_for(:budgets)[:initial_budgets].each do |slug, hours|
+      defaults_total += hours
       budgets << Budget.make(slug, hours)
     end
+    flexible_total = ENV.fetch('FLEXIBLE_TOTAL', 0).to_f
+    budgets << Budget.make(:flex, (flexible_total - defaults_total)) unless flexible_total.zero?
     budgets
   end
 end

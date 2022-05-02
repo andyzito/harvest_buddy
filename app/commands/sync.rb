@@ -6,8 +6,8 @@ class SyncCommand
       "https://api.harvestapp.com/api/v2/time_entries",
       {
         user_id: ENV.fetch('HARVEST_USER_ID'),
-        from: week.beginning_of_week,
-        to: week.end_of_week,
+        from: week.date.beginning_of_week,
+        to: week.date.end_of_week,
       },
       {
         'Harvest-Account-ID': ENV.fetch('HARVEST_ACCOUNT_ID'),
