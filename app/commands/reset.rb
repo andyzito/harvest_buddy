@@ -39,14 +39,12 @@ class ResetCommand < BaseCommand
   end
 
   def self.default_budgets
-    meetings = Float(ENV.fetch('INITIAL_BUDGET_FOR_MEETINGS', 8))
-    flex = Float(ENV.fetch('INITIAL_BUDGET_FOR_FLEX', 5))
-
     budgets = []
     budgets << Budget.make(:unknown, 0.0) if Env.fetch_bool('ENABLE_UNKNOWN', true)
     budgets << Budget.make(:unbudgeted, 0.0) if Env.fetch_bool('ENABLE_UNBUDGETED', true)
-    budgets << Budget.make(:meetings, meetings) if meetings.positive?
-    budgets << Budget.make(:flex, flex) if flex.positive?
+    Rails.application.config_for(:budgets)[:initial_budgets].each do |slug, hours|
+      budgets << Budget.make(slug, hours)
+    end
     budgets
   end
 end
