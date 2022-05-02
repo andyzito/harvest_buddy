@@ -26,10 +26,10 @@ class History < SubCommandBase
     HistoryCommand.summary
   end
 
-  desc "restore", "restore!"
-  map 'r' => :restore
-  def restore(week = nil)
-    HistoryCommand.restore(week)
+  desc "travel", "Set active week back in time!"
+  map 't' => :travel
+  def travel(week = nil)
+    HistoryCommand.travel(week)
   end
 end
 
@@ -38,18 +38,18 @@ class Hbb < Thor
   subcommand "history", History
   map 'h' => :history
 
-  desc "summary", ""
+  desc "summary", "Summarize active budgets"
   map 's' => :summary
   def summary
     SummaryCommand.run
   end
 
-  desc "sync", ""
+  desc "sync", "Sync data from Harvest for active week"
   def sync
     SyncCommand.run
   end
 
-  desc "reset", ""
+  desc "reset", "Reset to default budgets"
   map 'r' => :reset
   method_option :hard, type: :boolean, default: false
   def reset
@@ -58,13 +58,13 @@ class Hbb < Thor
     )
   end
 
-  desc "budget", ""
+  desc "budget", "Create/update a budget"
   map 'b' => :budget
   def budget(slug, hours = 0)
     BudgetCommand.create_or_update(slug, hours)
   end
 
-  desc "remove", ""
+  desc "remove", "Remove a budget"
   map 'rm' => :remove
   map 'del' => :remove
   map 'delete' => :remove
@@ -72,7 +72,7 @@ class Hbb < Thor
     BudgetCommand.remove(slug)
   end
 
-  desc "move", ""
+  desc "move", "Move hours from one budget to another"
   map 'mv' => :move
   map 'rebudget' => :move
   def move(from_slug, hours_or_to_slug, to_slug = '')

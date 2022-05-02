@@ -4,32 +4,20 @@ class ResetCommand < BaseCommand
   def self.run(save: true)
     active_week = Budget.active_week
 
-    unless self.is_diverged?
+    if !self.is_diverged? && active_week.in?(Budget.weeks)
       puts "Already reset."
       return
     end
 
-    if save
-      if Budget.archived.exists?(week: active_week)
-        puts "Week #{active_week} has already been pushed to the history. Would you like to overwrite? [y/N]"
-        answer = STDIN.gets.chomp
-        if yes?(answer)
-          Budget.archived.where(week: active_week).delete_all
-        else
-          return
-        end
-      end
-
-      Budget.active.update(status: :archived)
+    if active_week.in?(Budget.weeks)
+      puts "You are about to reset an existing week. Continue? [y/N]"
+      return unless yes?(STDIN.gets.chomp)
     else
-      puts "Reset without saving active budgets? [y/N]"
-      if yes?(STDIN.gets.chomp)
-        Budget.active.delete_all
-      else
-        return
-      end
+      Budget.active.update_all(status: :archived)
     end
 
+    Budget.active.delete_all
+    "> Resetting #{active_week}..."
     self.default_budgets.map(&:save!)
   end
 

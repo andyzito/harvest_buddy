@@ -13,16 +13,16 @@ class HistoryCommand < BaseCommand
         week_label = "#{is_active ? '*' : ''}#{week}"
         t.add_row [
           week_label,
-          Budget.total_spent(week, status: :archived),
-          Budget.total_budgeted(week, status: :archived),
-          Budget.total_left(week, status: :archived),
+          Budget.total_spent(week),
+          Budget.total_budgeted(week),
+          Budget.total_left(week),
         ]
       end
     end
     puts table
   end
 
-  def self.restore(week = nil)
+  def self.travel(week = nil)
     if week.nil?
       week = Budget.weeks.last
     elsif (minus = week[/^\-(\d+)$/,1])
@@ -31,22 +31,13 @@ class HistoryCommand < BaseCommand
       week = week.to_date.beginning_of_week
     end
 
-    to_restore = Budget.archived.where(week: week)
-    if to_restore.empty?
+    unless Budget.exists?(week: week)
       puts "Week #{week} is not stored in the history"
       return
-    elsif ResetCommand.is_diverged?
-      puts "There is data in your active budgets, are you sure you want to overwrite with week #{week}? [y/N]"
-      return unless yes?(STDIN.gets.chomp)
     end
 
-    puts "> Restoring week #{week}"
-    Budget.active.delete_all
-    restored = Budget.archived.where(week: week).map(&:dup)
-    restored.map do |budget|
-      budget.week = Budget.active_week # Expected to default to Date.today.beginning_of_week.
-      budget.status = :active
-      budget.save!
-    end
+    puts "> Traveling to week of #{week}"
+    Budget.active.update_all(status: :archived)
+    Budget.where(week: week).update_all(status: :active)
   end
 end

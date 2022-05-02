@@ -1,6 +1,6 @@
 class SummaryCommand
   def self.run(budgets=Budget.active)
-    table = Terminal::Table.new do |t|
+    table = Terminal::Table.new title: "Week of #{Budget.active_week}" do |t|
       t.add_row ['', 'Spent', 'Budgeted', 'Left']
       t.add_separator
       t.add_row ['', Budget.total_spent, Budget.total_budgeted, Budget.total_left]
