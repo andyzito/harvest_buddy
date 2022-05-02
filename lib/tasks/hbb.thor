@@ -65,9 +65,9 @@ class Hbb < Thor
   end
 
   desc "remove", ""
-  map 'rm' => :budget
-  map 'del' => :budget
-  map 'delete' => :budget
+  map 'rm' => :remove
+  map 'del' => :remove
+  map 'delete' => :remove
   def remove(slug, hours = 0)
     BudgetCommand.remove(slug)
   end

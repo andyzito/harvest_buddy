@@ -1,11 +1,13 @@
 class SyncCommand
   def self.run
+    week = Budget.active_week
+
     response = Faraday.get(
       "https://api.harvestapp.com/api/v2/time_entries",
       {
         user_id: ENV.fetch('HARVEST_USER_ID'),
-        from: Date.today.beginning_of_week,
-        to: Date.today.end_of_week,
+        from: week.beginning_of_week,
+        to: week.end_of_week,
       },
       {
         'Harvest-Account-ID': ENV.fetch('HARVEST_ACCOUNT_ID'),
@@ -15,8 +17,6 @@ class SyncCommand
     )
 
     time_entries = JSON.parse(response.body)['time_entries']
-
-    week = Date.today.beginning_of_week
 
     budget_totals = {
       unbudgeted: 0,

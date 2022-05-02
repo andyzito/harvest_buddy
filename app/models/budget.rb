@@ -1,9 +1,14 @@
 class Budget < ActiveRecord::Base
-  def self.make(slug, time_budgeted, time_spent = 0)
+
+  enum status: [:active, :archived]
+
+  def self.make(slug, time_budgeted, time_spent = 0, status: :active)
     instance = self.new
     instance.slug = slug
     instance.time_budgeted = time_budgeted
     instance.time_spent = time_spent
+    instance.status = status
+    instance.week = self.active_week
     return instance
   end
 
@@ -34,22 +39,24 @@ class Budget < ActiveRecord::Base
     super(value.to_f.round_to_quarter)
   end
 
-  scope :active, -> { where(week: nil) }
-
-  def self.total_budgeted(week = nil)
-    Budget.where(week: week).sum(&:time_budgeted).round
+  def self.total_budgeted(week = self.active_week, status: :active)
+    Budget.where(week: week, status: status).sum(&:time_budgeted).round
   end
 
-  def self.total_spent(week = nil)
-    Budget.where(week: week).sum(&:time_spent).round
+  def self.total_spent(week = self.active_week, status: :active)
+    Budget.where(week: week, status: status).sum(&:time_spent).round
   end
 
-  def self.total_left(week = nil)
-    Budget.where(week: week).sum(&:time_left).round
+  def self.total_left(week = self.active_week, status: :active)
+    Budget.where(week: week, status: status).sum(&:time_left).round
   end
 
   def self.weeks
     Budget.order(week: :desc).distinct.pluck(:week).compact
+  end
+
+  def self.active_week
+    Budget.active.sample&.week || Date.today.beginning_of_week
   end
 
   def to_comparable

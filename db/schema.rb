@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_29_054150) do
+ActiveRecord::Schema.define(version: 2022_05_02_144639) do
 
   create_table "budgets", force: :cascade do |t|
     t.string "slug"
     t.decimal "time_budgeted"
     t.decimal "time_spent"
     t.date "week"
+    t.integer "status", default: 0
   end
 
 end

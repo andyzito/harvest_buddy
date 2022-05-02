@@ -20,7 +20,13 @@ class BudgetCommand
   end
 
   def self.remove(budget_slug)
-    Budget.active.where(slug: budget_slug).delete_all
+    if Budget.active.exists?(slug: budget_slug)
+      budget = Budget.active.find_by(slug: budget_slug)
+      puts "> Deleting #{budget.slug} (#{budget.time_spent}/#{budget.time_budgeted})"
+      Budget.delete_by(slug: budget_slug, status: :active)
+    else
+      puts "Budget #{budget_slug} does not exist in the active week."
+    end
   end
 
   def self.move(from_slug:, hours:, to_slug:)

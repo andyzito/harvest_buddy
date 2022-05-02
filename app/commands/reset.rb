@@ -2,7 +2,7 @@ require_relative 'base'
 
 class ResetCommand < BaseCommand
   def self.run(save: true)
-    week = Date.today.beginning_of_week
+    active_week = Budget.active_week
 
     unless self.is_diverged?
       puts "Already reset."
@@ -10,17 +10,17 @@ class ResetCommand < BaseCommand
     end
 
     if save
-      if Budget.exists?(week: week)
-        puts "Week #{week} has already been pushed to the history. Would you like to overwrite? [y/N]"
+      if Budget.archived.exists?(week: active_week)
+        puts "Week #{active_week} has already been pushed to the history. Would you like to overwrite? [y/N]"
         answer = STDIN.gets.chomp
         if yes?(answer)
-          Budget.where(week: week).delete_all
+          Budget.archived.where(week: active_week).delete_all
         else
           return
         end
       end
 
-      Budget.active.update(week: week)
+      Budget.active.update(status: :archived)
     else
       puts "Reset without saving active budgets? [y/N]"
       if yes?(STDIN.gets.chomp)

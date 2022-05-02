@@ -1,7 +1,6 @@
-x round to nearest .25
-x don't show .0
 - ability to sort summary by any column
 - better summary formatting (more space? larger text?)
-x better reset command
-x better cli invocation ([namespace] budget ...)
 - command to clear tags from harvest notes (for submission at end of week -- maybe not needed, ask if PMs/HR put notes in client invoices?)
+- weekly maximum hours across all budgets
+- budget across multiple weeks?
+- autocreate found slugs if they don't exist
