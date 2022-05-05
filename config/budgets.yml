@@ -1,8 +1,14 @@
 default: &default
+  default_groups:
+    flex: meta
+    meetings: meta
+    break: meta
+    maint: meta
   initial_budgets:
-    meetings: 6
-    break: 2.5
-    maint: 5
+    meta:
+      meetings: 6
+      break: 2.5
+      maint: 5
 
 test:
   <<: *default

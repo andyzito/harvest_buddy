@@ -1,5 +1,3 @@
-require_relative 'base'
-
 class ResetCommand < BaseCommand
   def self.run
     if Week.exists?(date: Date.today.beginning_of_week)

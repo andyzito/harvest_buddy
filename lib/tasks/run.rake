@@ -1,8 +1,4 @@
-require_relative '../../app/commands/budget.rb'
-require_relative '../../app/commands/summary.rb'
-require_relative '../../app/commands/sync.rb'
-require_relative '../../app/commands/reset.rb'
-require_relative '../../app/commands/history.rb'
+
 require 'dotenv'
 
 desc "runme"

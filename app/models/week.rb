@@ -45,28 +45,48 @@ class Week < ActiveRecord::Base
     "#{long_label}"
   end
 
-  def total_budgeted
-    budgets.sum(&:time_budgeted).round
+  def total_budgeted(group = nil)
+    _budgets = group.nil? ? budgets : budgets.where(group: group)
+    _budgets.sum(&:time_budgeted)#.round
   end
 
-  def total_spent
-    budgets.sum(&:time_spent).round
+  def total_spent(group = nil)
+    _budgets = group.nil? ? budgets : budgets.where(group: group)
+    _budgets.sum(&:time_spent)#.round
   end
 
-  def total_left
-    budgets.sum(&:time_left).round
+  def total_left(group = nil)
+    _budgets = group.nil? ? budgets : budgets.where(group: group)
+    _budgets.sum(&:time_left)#.round
   end
 
-  def budget_exists?(slug)
-    budgets.exists?(slug: slug)
+  def budget_exists?(group_slug, budget_slug)
+    budgets.exists?(group: group_slug, slug: budget_slug)
   end
 
-  def find_budget(slug)
-    budgets.find_by(slug: slug)
+  def find_budget(group_slug, budget_slug, create: false)
+    args = {
+      group: group_slug,
+      slug: budget_slug
+    }
+
+    if create
+      Budget.find_or_create_by(**args, week: self)
+    else
+      budgets.find_by(**args)
+    end
   end
 
-  def delete_budget(slug)
-    budgets.delete_by(slug: slug)
+  def delete_budget(group_slug, budget_slug)
+    budgets.delete_by(group: group_slug, slug: budget_slug)
+  end
+
+  def groups
+    budgets.distinct.pluck(:group)
+  end
+
+  def group(group)
+    budgets.where(group: group)
   end
 
   def self.activate(week)

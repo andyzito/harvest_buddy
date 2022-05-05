@@ -6,6 +6,8 @@ require 'dotenv'
 
 Dotenv.load('.env.local')
 
+META_GROUP_SLUG=:meta
+
 class String
   def is_number?
     true if Float(self) rescue false

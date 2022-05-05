@@ -3,5 +3,5 @@
 - command to clear tags from harvest notes (for submission at end of week -- maybe not needed, ask if PMs/HR put notes in client invoices?)
 - budget across multiple weeks?
 - autocreate found slugs if they don't exist (sync and mv)
-- budget tags/groups to represent projects, non-project-budgets, maybe others?
 - show how many hours a day would be needed in days left
+- command to autoround entries in harvest

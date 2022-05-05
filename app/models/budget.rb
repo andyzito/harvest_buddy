@@ -2,13 +2,20 @@ class Budget < ActiveRecord::Base
 
   belongs_to :week
 
-  def self.make(slug, time_budgeted, time_spent = 0, week: nil)
+  validates :slug, presence: true
+
+  def self.make(group_slug, slug, time_budgeted, time_spent = 0, week: nil)
     instance = self.new
+    instance.group = group_slug
     instance.slug = slug
     instance.time_budgeted = time_budgeted
     instance.time_spent = time_spent
     instance.week = week
     return instance
+  end
+
+  def comboslug
+    "#{group}:#{slug}"
   end
 
   def hours_format(number)
@@ -40,6 +47,7 @@ class Budget < ActiveRecord::Base
 
   def to_comparable
     {
+      group: group,
       slug: slug,
       time_spent: time_spent.to_f,
       time_budgeted: time_budgeted.to_f,
@@ -49,15 +57,21 @@ class Budget < ActiveRecord::Base
 
   def self.defaults
     budgets = []
-    budgets << Budget.make(:unknown, 0.0) if Env.fetch_bool('ENABLE_UNKNOWN', true)
-    budgets << Budget.make(:unbudgeted, 0.0) if Env.fetch_bool('ENABLE_UNBUDGETED', true)
+    # budgets << Budget.make(:unknown, 0.0) if Env.fetch_bool('ENABLE_UNKNOWN', true)
+    budgets << Budget.make(:meta, :unbudgeted, 0.0) if Env.fetch_bool('ENABLE_UNBUDGETED', true)
     defaults_total = 0
-    Rails.application.config_for(:budgets)[:initial_budgets].each do |slug, hours|
-      defaults_total += hours
-      budgets << Budget.make(slug, hours)
+    Rails.application.config_for(:budgets)[:initial_budgets].each do |group, _budgets|
+      _budgets.each do |slug, hours|
+        defaults_total += hours
+        budgets << Budget.make(group, slug, hours)
+      end
     end
     flexible_total = ENV.fetch('FLEXIBLE_TOTAL', 0).to_f
-    budgets << Budget.make(:flex, (flexible_total - defaults_total)) unless flexible_total.zero?
+    budgets << Budget.make(:meta, :flex, (flexible_total - defaults_total)) unless flexible_total.zero?
     budgets
+  end
+
+  def self.group(group_slug)
+    Budget.where(group: group_slug)
   end
 end

@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_02_161643) do
+ActiveRecord::Schema.define(version: 2022_05_05_002444) do
 
   create_table "budgets", force: :cascade do |t|
     t.string "slug"
     t.decimal "time_budgeted"
     t.decimal "time_spent"
     t.integer "week_id"
+    t.string "group"
     t.index ["week_id"], name: "index_budgets_on_week_id"
   end
 

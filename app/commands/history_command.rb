@@ -1,7 +1,3 @@
-require_relative 'base'
-require_relative 'summary'
-require_relative 'reset'
-
 class HistoryCommand < BaseCommand
   def self.summary
     table = Terminal::Table.new do |t|
