@@ -24,7 +24,7 @@ class SyncCommand
     }
 
     time_entries.each do |time|
-      budget_slug = time['notes'][/\[hbb\:([a-z0-9\-\_]+)\]/,1]&.to_sym
+      budget_slug = time['notes'][/\[hbb\:([a-zA-Z0-9\-\_]+)\]/,1]&.to_sym
 
       budget_slug = :unbudgeted unless budget_slug
       budget_slug = :unknown unless Week.active.budget_exists?(budget_slug)

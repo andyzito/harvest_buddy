@@ -8,7 +8,7 @@ class BudgetCommand < BaseCommand
       old_time_budgeted = budget.time_budgeted
       if hours.match(/(\+|\-)[\d\.]+/)
         budget.time_budgeted = budget.time_budgeted + hours.to_f
-        flex_diff = hours.to_f
+        flex_diff = -1 * hours.to_f
       else
         budget.time_budgeted = hours.to_f
         flex_diff = old_time_budgeted - hours.to_f
@@ -35,7 +35,7 @@ class BudgetCommand < BaseCommand
     new_flex_hours = flex.time_budgeted + diff
 
     if new_flex_hours < 0
-      puts "You do not have enough flex hours left to perform this action. Proceed anyway? [y/N]"
+      puts "You do not have enough flex hours left to perform this action (#{diff}). Proceed anyway? [y/N]"
       exit unless yes?(STDIN.gets.chomp)
     elsif new_flex_hours > flex_total
       raise "Somehow you've done a thing that attempted to exceed the FLEXIBLE_TOTAL #{flex_total}"
@@ -63,8 +63,8 @@ class BudgetCommand < BaseCommand
   end
 
   def self.move(from_slug:, hours:, to_slug:)
-    from_budget = Week.active.find_budget(slug: from_slug)
-    to_budget = Week.active.find_budget(slug: to_slug)
+    from_budget = Week.active.find_budget(from_slug)
+    to_budget = Week.active.find_budget(to_slug)
 
     raise "#{from_slug} doesn't exist" unless from_budget
 

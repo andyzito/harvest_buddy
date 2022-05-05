@@ -60,3 +60,5 @@ gem "dotenv", "~> 2.7"
 gem "terminal-table", "~> 3.0"
 
 gem "thor", "~> 1.2"
+
+gem "colorize", "~> 0.8.1"
