@@ -6,7 +6,7 @@ class SummaryCommand
       t.add_row ['', 'Spent', 'Budgeted', 'Left']
       t.add_separator
       t.add_row ['TOTAL', Week.active.total_spent, Week.active.total_budgeted, Week.active.total_left]
-      Week.active.groups.each do |group|
+      Week.active_groups.each do |group|
         group_done = Week.active.total_left(group) == 0
         t.add_separator
         row = [group.to_s.bold, Week.active.total_spent(group).to_s.bold, Week.active.total_budgeted(group).to_s.bold, Week.active.total_left(group).to_s.bold]

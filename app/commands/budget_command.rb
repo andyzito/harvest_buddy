@@ -7,7 +7,7 @@ class BudgetCommand < BaseCommand
       flex_diff = -1 * hours.to_f
     else
       budget.time_budgeted = hours.to_f
-      flex_diff = -1 * (old_time_budgeted - hours.to_f)
+      flex_diff = -1 * (hours.to_f - old_time_budgeted)
     end
 
     puts "> #{budget.comboslug}: #{old_time_budgeted.present? ? "#{old_time_budgeted} → " : ''}#{budget.time_budgeted}"
@@ -75,9 +75,9 @@ class BudgetCommand < BaseCommand
 
     unless to_budget
       if Env.fetch_bool('ENABLE_CREATE_ON_MV', true)
-        to_budget = Budget.make(to_group, to_slug, 0, week: Week.active)
+        to_budget = Budget.make(to_group, to_budget_slug, 0, week: Week.active)
       else
-        raise "#{to_group}:#{to_slug} doesn't exist"
+        raise "#{to_group}:#{to_budget_slug} doesn't exist"
       end
     end
 

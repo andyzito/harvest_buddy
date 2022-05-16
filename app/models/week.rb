@@ -89,6 +89,13 @@ class Week < ActiveRecord::Base
     budgets.where(group: group)
   end
 
+  def self.active_groups
+    all = Week.active.groups
+    meta = all.delete('meta')
+    blank = all.delete('')
+    return [meta] + all + [blank]
+  end
+
   def self.activate(week)
     Week.where(active: true).update_all(active: false)
     week.update!(active: true)

@@ -25,7 +25,7 @@ class HistoryCommand < BaseCommand
     end
 
     if week.nil?
-      puts "#{week.long_label} is not stored in the history"
+      puts "That week is not stored in the history"
       return
     end
 
