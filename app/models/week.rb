@@ -92,8 +92,14 @@ class Week < ActiveRecord::Base
   def self.active_groups
     all = Week.active.groups
     meta = all.delete('meta')
+    me = all.delete('me')
     blank = all.delete('')
-    return [meta] + all + [blank]
+
+    sorted = [meta]
+    sorted << me unless me.nil?
+    sorted += all
+    sorted << blank unless blank.nil?
+    return sorted
   end
 
   def self.activate(week)

@@ -9,7 +9,7 @@ class SummaryCommand
       Week.active_groups.each do |group|
         group_done = Week.active.total_left(group) == 0
         t.add_separator
-        row = [group.to_s.bold, Week.active.total_spent(group).to_s.bold, Week.active.total_budgeted(group).to_s.bold, Week.active.total_left(group).to_s.bold]
+        row = [(group || "-"), Week.active.total_spent(group), Week.active.total_budgeted(group), Week.active.total_left(group)]
         row = row.map do |x|
           x = x.to_s.bold
           x = x.light_black if group_done
