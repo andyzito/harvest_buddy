@@ -64,10 +64,11 @@ class Week < ActiveRecord::Base
     budgets.exists?(group: group_slug, slug: budget_slug)
   end
 
-  def find_budget(group_slug, budget_slug, create: false)
+  def find_budget(comboslug, create: false)
+    group, slug = Budget.parse_comboslug(comboslug)
     args = {
-      group: group_slug,
-      slug: budget_slug
+      group: group,
+      slug: slug,
     }
 
     if create

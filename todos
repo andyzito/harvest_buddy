@@ -1,3 +1,10 @@
+Standardize:
+- comboslug parsing (maybe directly in Budget instance?)
+- time_budgeted vs hours
+- group vs group_slug vs budget vs budget_slug
+- output ('> ')
+
+...
 - ability to sort summary by any column
 - better summary formatting (more space? larger text?)
 - command to clear tags from harvest notes (for submission at end of week -- maybe not needed, ask if PMs/HR put notes in client invoices?)
@@ -5,3 +12,5 @@
 - autocreate found slugs if they don't exist (sync and mv)
 - show how many hours a day would be needed in days left
 - command to autoround entries in harvest
+- table of synced changes when syncing
+- highlight sync issues in red (unbudgeted time, time exceeding budget)

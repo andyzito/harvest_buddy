@@ -1,6 +1,5 @@
 class BudgetCommand < BaseCommand
-  def self.create_or_update(group_slug, budget_slug, hours)
-    budget = Week.active.find_budget(group_slug, budget_slug, create: true)
+  def self.create_or_update(budget, hours)
     old_time_budgeted = budget.time_budgeted
     if hours.match(/(\+|\-)[\d\.]+/)
       budget.time_budgeted = budget.time_budgeted + hours.to_f
@@ -11,7 +10,7 @@ class BudgetCommand < BaseCommand
     end
 
     puts "> #{budget.comboslug}: #{old_time_budgeted.present? ? "#{old_time_budgeted} → " : ''}#{budget.time_budgeted}"
-    self.flex(flex_diff) unless budget_slug == :flex
+    self.flex(flex_diff) unless budget.comboslug == 'meta:flex'
     budget.save!
   end
 
@@ -20,7 +19,7 @@ class BudgetCommand < BaseCommand
 
     return if flex_total.zero?
 
-    flex = Week.active.find_budget(:meta, :flex)
+    flex = Week.active.find_budget('meta:flex')
 
     return unless flex.present?
 
@@ -46,7 +45,7 @@ class BudgetCommand < BaseCommand
     end
 
     if Week.active.budget_exists?(group_slug, budget_slug)
-      budget = Week.active.find_budget(group_slug, budget_slug)
+      budget = Week.active.find_budget("#{group_slug}:#{budget_slug}")
       puts "> Deleting #{budget.comboslug} (#{budget.time_spent}/#{budget.time_budgeted})"
       Week.active.delete_budget(group_slug, budget_slug)
     else
@@ -55,8 +54,8 @@ class BudgetCommand < BaseCommand
   end
 
   def self.move(from_group:, from_budget_slug:, hours:, to_group:, to_budget_slug:)
-    from_budget = Week.active.find_budget(from_group, from_budget_slug)
-    to_budget = Week.active.find_budget(to_group, to_budget_slug)
+    from_budget = Week.active.find_budget("#{from_group}:#{from_budget_slug}")
+    to_budget = Week.active.find_budget("#{to_group}:#{to_budget_slug}")
 
     raise "#{from_group}:#{from_slug} doesn't exist" unless from_budget
 
@@ -75,7 +74,12 @@ class BudgetCommand < BaseCommand
 
     unless to_budget
       if Env.fetch_bool('ENABLE_CREATE_ON_MV', true)
-        to_budget = Budget.make(to_group, to_budget_slug, 0, week: Week.active)
+        to_budget = Budget.new(
+          group: to_group,
+          slug: to_budget_slug,
+          time_budgeted: 0,
+          week: Week.active
+        )
       else
         raise "#{to_group}:#{to_budget_slug} doesn't exist"
       end

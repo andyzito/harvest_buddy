@@ -28,10 +28,28 @@ class History < SubCommandBase
   end
 end
 
+class Harvest < SubCommandBase
+  desc "sync", "sync!"
+  map 's' => :sync
+  def sync
+    HarvestCommand.sync
+  end
+
+  # desc "round", "Set active week back in time!"
+  # map 't' => :travel
+  # def travel(week = nil)
+  #   HistoryCommand.travel(week)
+  # end
+end
+
 class Hbb < Thor
   desc "history", ""
   subcommand "history", History
   map 'h' => :history
+
+  desc "harvest", ""
+  subcommand "harvest", Harvest
+  map 'hv' => :harvest
 
   desc "summary", "Summarize active budgets"
   map 's' => :summary
@@ -39,10 +57,10 @@ class Hbb < Thor
     SummaryCommand.run
   end
 
-  desc "sync", "Sync data from Harvest for active week"
-  def sync
-    SyncCommand.run
-  end
+  # desc "sync", "Sync data from Harvest for active week"
+  # def sync
+  #   SyncCommand.run
+  # end
 
   desc "reset", "Reset to default budgets"
   map 'r' => :reset
@@ -54,8 +72,8 @@ class Hbb < Thor
   desc "budget", "Create/update a budget"
   map 'b' => :budget
   def budget(comboslug, hours = 0)
-    group_slug, budget_slug = BudgetCommand.parse_comboslug(comboslug)
-    BudgetCommand.create_or_update(group_slug, budget_slug, hours)
+    budget = Week.active.find_budget(comboslug)
+    BudgetCommand.create_or_update(budget, hours)
   end
 
   desc "remove", "Remove a budget"
@@ -63,7 +81,7 @@ class Hbb < Thor
   map 'del' => :remove
   map 'delete' => :remove
   def remove(comboslug, hours = 0)
-    group_slug, budget_slug = BudgetCommand.parse_comboslug(comboslug)
+    group_slug, budget_slug = Budget.parse_comboslug(comboslug)
     BudgetCommand.remove(group_slug, budget_slug)
   end
 
@@ -74,8 +92,8 @@ class Hbb < Thor
     hours = hours_or_to_slug.is_number? ? hours_or_to_slug.to_f : false
     to_comboslug = hours_or_to_slug.is_number? ? to_comboslug : hours_or_to_slug
 
-    from_group, from_budget = BudgetCommand.parse_comboslug(from_comboslug)
-    to_group, to_budget = BudgetCommand.parse_comboslug(to_comboslug)
+    from_group, from_budget = Budget.parse_comboslug(from_comboslug)
+    to_group, to_budget = Budget.parse_comboslug(to_comboslug)
 
     BudgetCommand.move(
       from_group: from_group,
@@ -84,6 +102,11 @@ class Hbb < Thor
       to_group: to_group,
       to_budget_slug: to_budget,
     )
+  end
+
+  desc "round", "Round hours in Harvest"
+  def round
+    RoundCommand.run
   end
 
   def self.exit_on_failure?

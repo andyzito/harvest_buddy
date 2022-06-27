@@ -1,4 +1,6 @@
 default: &default
+  default_tags:
+    'GR: Break': '[hbb::break]'
   default_groups:
     flex: meta
     meetings: meta
@@ -6,9 +8,12 @@ default: &default
     maint: meta
   initial_budgets:
     meta:
-      meetings: 6
+      meetings: 1.5 # Staff meeting, EWC
       break: 2.5
-      maint: 5
+    inrev:
+      meetings: 2 # Checkins
+    ops:
+      meetings: 1 # Planning meeting
 
 test:
   <<: *default
