@@ -35,7 +35,6 @@ class HarvestCommand < BaseCommand
         if default_tags.key?(task_name)
           group_slug, budget_slug = self.extract_comboslug(default_tags[task_name])
         else
-          byebug
           group_slug = :meta
           budget_slug = :unbudgeted
         end
@@ -53,7 +52,7 @@ class HarvestCommand < BaseCommand
       end
 
       byebug if group_slug.nil?
-      # puts time['notes'] if budget_slug == :unbudgeted
+      puts time['notes'] if budget_slug == :unbudgeted
 
       totals[group_slug.to_sym] ||= {}
       totals[group_slug.to_sym][budget_slug.to_sym] ||= 0

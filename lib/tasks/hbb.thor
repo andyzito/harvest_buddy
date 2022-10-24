@@ -72,7 +72,7 @@ class Hbb < Thor
   desc "budget", "Create/update a budget"
   map 'b' => :budget
   def budget(comboslug, hours = 0)
-    budget = Week.active.find_budget(comboslug)
+    budget = Week.active.find_budget(comboslug, create: true)
     BudgetCommand.create_or_update(budget, hours)
   end
 

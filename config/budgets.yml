@@ -1,6 +1,9 @@
 default: &default
   default_tags:
     'GR: Break': '[hbb::break]'
+    'GR: Staff Meeting': '[hbb::meetings]'
+    'INREV: Management Fee and Terms Study [D]': '[hbb:inrev:mft]'
+    'Eng: Water Cooler': '[hbb::meetings]'
   default_groups:
     flex: meta
     meetings: meta
@@ -10,10 +13,16 @@ default: &default
     meta:
       meetings: 1.5 # Staff meeting, EWC
       break: 2.5
+    me:
+      flex: 5 # In between time
+      # localdev: 6
     inrev:
-      meetings: 2 # Checkins
-    ops:
-      meetings: 1 # Planning meeting
+      flex: 0
+      meetings: 3 # Checkins
+    # ops:
+    #   flex: 0
+    #   meetings: 1 # Planning meeting
+    #   openpath: 4 # There is always something for OP
 
 test:
   <<: *default
