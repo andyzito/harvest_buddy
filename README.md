@@ -1,24 +1,12 @@
-# README
+# HarvestBuddy README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+HarvestBuddy is a prototype command line tool which allows users of the [Harvest](https://www.getharvest.com/) time tracking software to arbitrarily categorize tasks and create per-task hours budgets. It was created for personal use while I was working at [Green River](https://www.greenriver.com/).
 
-Things you may want to cover:
+# What does it do?
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+You can...
+- Define a total number of hours you'd like to work each week
+- Budget those hours to an arbitrary arrangement of groups + categories
+- Use the Harvest entry Notes field to tag entries as part of a given category
+- Update the time spent per category from Harvest with a single command
+- Easily rearrange budgeted hours between groups + categories
